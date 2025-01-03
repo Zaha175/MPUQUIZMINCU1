@@ -3,21 +3,23 @@
 <head>
 <title>MPU Quiz</title>
 <style>
-body { margin: 20px; font-family: sans-serif; }
-.question { margin-bottom: 10px; color: darkblue; font-weight: bold; /* Frage wird dunkelblau und fett */ }
-.answers button { display: block; width: 100%; padding: 10px; margin-bottom: 5px; border: 1px solid #ccc; }
+body { margin: 20px; font-family: sans-serif; background-color: #e3f2fd; }
+.question { margin-bottom: 10px; color: darkblue; font-weight: bold; font-size: 1.5em; }
+.answers button { display: block; width: 100%; padding: 15px; margin-bottom: 10px; border: 1px solid #ccc; font-size: 1.2em; font-weight: bold; background-color: #fff9c4; }
 .answers button.selected { background-color: #e0f2f7; }
 .answers button.correct { background-color: #c8e6c9; }
 .answers button.incorrect { background-color: #ffcdd2; }
 #quiz { display: none; }
 #results { display: none; margin-top: 20px; text-align: center; font-size: 1.2em; font-weight: bold; }
+.progress { margin-bottom: 10px; font-size: 1em; font-weight: bold; color: #333; }
 </style>
 </head>
 <body>
 
-<button onclick="startQuiz()">Quiz starten</button>
+<button onclick="startQuiz()" style="font-size: 1.5em; font-weight: bold; color: darkblue; padding: 15px;">Quiz starten</button>
 
 <div id="quiz">
+    <div class="progress" id="progress"></div>
     <div class="question" id="questionText"></div>
     <div class="answers" id="answerButtons"></div>
     <button onclick="nextQuestion()">Nächste Frage</button>
@@ -28,194 +30,441 @@ body { margin: 20px; font-family: sans-serif; }
 <script>
 const qa_data = [
     {
-                "question": "De ce veniți la MPU? De ce sunteți astăzi aici?",
-                "answer": "Sunt aici la MPU pentru că am condus sub influența alcoolului, nu am respectat legea, am făcut un accident, am fost un egoist, am fost un pericol pentru mine și pentru alții! Mi-am dat seama că am o problemă cu alcoolul, am fost în abuz de alcool, și am încetat să beau. Astăzi aș vrea să vă arăt că m-am schimbat și că acum sunt capabil să conduc responsabil."
-            },
+        "question": "De ce veniți la MPU? De ce sunteți astăzi aici?",
+        "answer": `
+        <p><strong>Sunt aici la MPU pentru că:<strong></p>
+        <ul>
+            <li>Am condus sub influența alcoolului</li>
+            <li>Nu am respectat legea</li>
+            <li>Am făcut un accident</li>
+            <li>Am fost un egoist</li>
+            <li>Am fost un pericol pentru mine și pentru alții</li>
+        </ul>
+        <p><strong>Mi-am dat seama că:<strong></p>
+        <ul>
+            <li>Am o problemă cu alcoolul</li>
+            <li>Am fost în abuz de alcool</li>
+            <li>Am încetat să beau</li>
+        </ul>
+        <p><strong>Astăzi vreau să vă arăt că:<strong></p>
+        <ul>
+            <li>M-am schimbat</li>
+            <li>Acum sunt capabil să conduc responsabil</li>
+        </ul>
+          <div id="video-wrapper">
+            <iframe width="560" height="315" src="https://www.youtube.com/embed/gSda8TXfmDE?si=I2s7B2eknyVpd1xy" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        </div>
+    `
+    },
+    {
+        "question": "De ce credeți că autoritățile sunt îngrijorate cu privire la capacitatea dvs. de a conduce un vehicul? Sunteți de acord că veniți la MPU?",
+        "answer": `
+        <p><strong>Da sunt de acord pentru că am condus sub influența alcoolului și am făcut un accident! Acest lucru este o infracțiune gravă care a pus în pericol viața mea și a altora!<strong></p>
+        <div id="video-wrapper">
+            <iframe width="560" height="315" src="https://www.youtube.com/embed/Ve3jDM9v5eg?si=OobRcabjNSk7X3d7" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        </div>
+        <div class="image-wrapper">
+        <img src='https://i.imgur.com/AVJoo7t.jpeg' alt='Descrierea imaginii' class='answer-image'>
+         </div>
+          `
+    },
+    {
+        "question": "Descrieți ziua delictului din punctul dvs. de vedere cu data și ora?",
+        "answer": ` <p><strong>06.08.2022 Sâmbătă, Am avut accident la ora 20:15\n\nConduceam pe drumul de stat 438 din Alsheim spre Dorn-Dürkheim, din cauza consumului de alcool și a vitezei mărite, am intrat în groapa din partea dreapta a străzii, mașina sa răsturnat și a ajuns la aproximativ 75 de metri de stradă pe acoperiș. Prietenii mei din mașină au fost ușor răniți.\n\nProba de sânge la 22:27 a avut 1,66 Promile.\n\nÎnceputul consumului de alcool până la colectarea sângelui: 8,5 ore!\n\nSâmbătă, 06.08.2022, zi de naștere\n\nAm început să consum alcool de la 14:00 până la 20:00. Am fost cinci prieteni. Am băut 9 sticle de bere (jumătate), 4,5 Litri de bere (5%) + 2 duble țuică (șnaps) (40 ml, 40 Vol.-%). <p><strong>
+   <div id="video-wrapper">
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/FDGVIV-VdCA?si=6F2ukfW4DMF0v5-F" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+   </div>
+    `
+    },
+
+    {
+        "question": "Ați plănuit să consumați în ziua respectivă atât de mult?",
+        "answer": `
+        <p><strong>Nu, nu a fost planificat!<strong></p>
+        <p>Nu am avut controlul asupra consumului, asta este problema, consumul mi-a scăpat de sub control în timpul petrecerii!</p>
+        <div id="video-wrapper">
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/Q-kLZAkkpEM?si=Ng3xMH0XxHBmwjJU" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        </div>
+    `
+    },
+    {
+        "question": "Cum ați crezut că mai puteți conduce? Nu ați simțit influența alcoolului?",
+        "answer": `
+        <p><strong>Am vrut inițial să dormim acolo, dar m-am hotărât, \n\ndin confort, să conduc spre casă. <strong></p>
+        <p>Decizia, clar, a fost greșită și iresponsabilă, am făcut ceva ilegal, conducând sub influența alcoolului. Am făcut un accident!</p>
+        <div id="video-wrapper">
+           <iframe width="560" height="315" src="https://www.youtube.com/embed/mNoqKr11UjI?si=CNuhCHvJ-LesuUp4&start=5" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        </div>
+    `
+    },
+    {
+        "question": "Ați crezut că mai puteți conduce în siguranță?",
+        "answer": `
+        <p>Acum înțeleg că siguranța circulației este cel mai important lucru.  Ar fi trebuit să refuz și să spun nu. Îmi pare foarte rău pentru cele întâmplate! </p>
+        <p>Da, m-am simțit în stare să conduc. Din perspectiva de astăzi, desigur, nu a fost cazul!</p>
+         <div id="video-wrapper">
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/Of7WcEjgIhI?si=ZYKeKjbYM5eRmXRP" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+         </div>
+  `
+    },
+    {
+        "question": "Ce efecte are alcoolul asupra capacității de conducere?",
+        "answer": `
+        <p><strong>Reacție slabă, vedere tunel<strong></p>
+        <p>Mai mult preocupat de sine, mai puțin concentrat.</p>
+        <p>Distanțele nu mai pot fi estimate corect</p>
+        <p>De exemplu cu mașinile care circulă în sens opus sau în față.</p>
+        <p>Mai ales periculos pentru că nu sunt asigurat</p>
+        <p>Dacă fac accident sub influența alcoolului.</p>
+        <div class="image-wrapper">
+            <img src='https://i.imgur.com/1EiYKpC.jpeg' alt='Efecte ale alcoolului asupra capacității de conducere' class='answer-image'>
+        </div>
+    `
+    },
+    {
+        "question": "Cât de des ați fost sub influența alcoolului pe drum fără a atrage atenția și ce concluzionați din aceasta?",
+        "answer": `
+        <p><strong>Din păcate am condus deseori sub influența alcoolului, ignorând riscurile. Am condus de câteva ori ca în ziua delictului, sau cu rest alcool în sânge, da! Asta a fost iresponsabil din partea mea. Îmi pare rău!<strong></p>
+        <div id="video-wrapper">
+            <iframe width="560" height="315" src="https://www.youtube.com/embed/0eE-FG3h9Y0?si=yXLcYkygU_Pnpv8q" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        </div>
+    `
+    },
+          {
+    "question": "Gânduri, sentimente după delict?",
+    "answer": `
+        <p><strong>După delict, situație jenantă, mi-a fost rușine! Am fost nepăsător și egoist. Mi-am dat seama de gravitatea greșelii mele și faptul că i-am rănit pe prietenii mei și pe mine în trafic, ceea ce nu mi-aș fi dorit niciodată pentru nimeni. Înțeleg că am o problemă cu alcoolul și înțeleg pericolul pe care l-am reprezentat în trafic!<strong></p>
+            <div id="video-wrapper">
+             <iframe width="560" height="315" src="https://www.youtube.com/embed/iv6VNDkzrnk?si=IGa18429gDWiHEvO" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+              </div>
+    `
+},
+           {
+             "question": "Cum v-ați descurcat cu alcoolul după delict? Cine sau ce te-a motivat să-ți schimbi comportamentul? Care a fost punctul de cotitură?",
+    "answer": `
+        <p><strong>După ce mi-am pierdut permisul de conducere, am renunțat complet la alcool. Punctul de cotitură a fost accidentul, delictul, m-am trezit la realitate, a fost un șoc pentru mine. Am înțeles și m-am decis să-mi schimb comportamentul pentru viitorul meu, pentru familia mea, dar și pentru societate. Am realizat că o schimbare este necesară și vreau să mențin această schimbare permanent.<strong></p>
+            <div class="image-wrapper">
+            <img src='https://cdn.gamma.app/fhpleqvbjim2f32/83865dd1fcd74f7d8c57f6c59a573996/original/PunktdecotituraMinca1.jpg' alt='Efecte ale alcoolului asupra capacității de conducere' class='answer-image'>
+        </div>
+    `
+},
             {
-                "question": "De ce credeți că autoritățile sunt îngrijorate cu privire la capacitatea dvs. de a conduce un vehicul? Sunteți de acord că veniți la MPU?",
-                "answer": "Da sunt de acord pentru că am condus sub influența alcoolului și am făcut un accident! Acest lucru este o infracțiune gravă care a pus în pericol viața mea și a altora!"
-            },
+    "question": "Din ce alte motive ați mai renunțat la alcool?",
+    "answer": `
+        <p><strong>Am realizat că nu am control asupra consumului și că acesta îmi provoacă probleme în viață.<strong></p>
+        <p><b>Certuri și situații jenante!<b></p>
+        <p><strong>Neglijarea hobby-urilor!<strong></p>
+        <p><b>Am realizat că alcoolul îmi afectează negativ sănătatea și bunăstarea generală.<b></p>
+         <div id="video-wrapper">
+            <iframe width="560" height="315" src="https://www.youtube.com/embed/i5JX-nH-76M?si=fgJf7CFKBPwaq7OA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        </div>
+        <div class="image-wrapper">
+            <img src='https://i.imgur.com/ZHdzos1.jpeg' alt='Descrierea imaginii' class='answer-image'>
+        </div>
+    `
+},
+           {
+    "question": "Va fost ușor să renunțați la alcool?",
+    "answer": `
+        <p><strong>Nu!, nu a fost ușor, a fost neobișnuit să nu ai beau ca înainte alcool, nu a fost o problemă fizică, dar gândurile la alcool, au fost la început prezente, la zile de nașteri, petreceri.<strong></p>
+        <div id="video-wrapper">
+            <iframe width="560" height="315" src="https://www.youtube.com/embed/YaYRxl_9GMo?si=gWBu29swE0h5aIXf" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        </div>
+    `
+},
             {
-                "question": "Descrieți ziua delictului din punctul dvs. de vedere cu data și ora?",
-                "answer": "06.08.2022 Sâmbătă, Am avut accident la ora 20:15\n\nConduceam pe drumul de stat 438 din Alsheim spre Dorn-Dürkheim, din cauza consumului de alcool și a vitezei mărite, am intrat în groapa din partea dreapta a străzii, mașina sa răsturnat și a ajuns la aproximativ 75 de metri de stradă pe acoperiș. Prietenii mei din mașină au fost ușor răniți.\n\nProba de sânge la 22:27 a avut 1,66 Promile.\n\nÎnceputul consumului de alcool până la colectarea sângelui: 8,5 ore!\n\nSâmbătă, 06.08.2022, zi de naștere\n\nAm început să consum alcool de la 14:00 până la 20:00. Am fost cinci prieteni. Am băut 9 sticle de bere (jumătate), 4,5 Litri de bere (5%) + 2 duble țuică (șnaps) (40 ml, 40 Vol.-%)."
-            },
+    "question": "De ce nu ați renunțat mai devreme la alcool?",
+    "answer": `
+        <p><strong>În trecut, nu mi-am pus niciodată problema să renunț la alcool, deoarece nu am avut grijă de sănătatea mea. Credeam că alcoolul mă ajută să fac față stresului și îmi ușurează relațiile sociale. Consumul de alcool era considerat cel mai normal lucru din lume la petreceri și nu m-am gândit la consecințele negative asupra corpului meu.<strong></p>
+        <div id="video-wrapper">
+           <iframe width="560" height="315" src="https://www.youtube.com/embed/jTcnFEE4uLw?si=55oRuoBt-9ZrJv3s" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        </div>
+    `
+},
+          {
+    "question": "Cât și cât de des ați consumat? Trecut:",
+    "answer": `
+        <p><strong>Între 20 și 30 de ani , am băut 3-4 beri de 0,5 litri și 2 duble de trei sau patru ori pe lună, mai ales în weekend, de obicei la ocazii speciale sau la restaurant.<strong></p>
+        <p><strong>De la 30 la 34 de ani , când am venit in Germania, deci în ultimii patru ani, mi-am schimbat comportamentul de a bea în mod negativ, am început să beau regulat, din păcate, cantitatea de băutură a crescut! Diferit după muncă, de obicei miercuri, joi 2-3 beri. În weekend 4-5, 5-6, 7-8 beri.<strong></p>
+        <p><strong>Cantități maxime: la fiecare 2 luni 9-10 beri + 2 duble, deci de aproximativ 6 ori pe an.<strong></p>
+        <div class="image-wrapper">
+          <img src='https://cdn.gamma.app/fhpleqvbjim2f32/a67da90cd4144e5996e18e7fb566d76e/original/MincaConsum.jpg' alt='Descrierea imaginii' class='answer-image'>
+        </div>
+      
+      
+    `
+},
+		
+             {
+    "question": "De ce ați băut? Cauze?",
+    "answer": `
+        <p><strong>Cauza o văd la mine în trecut și se află în gândurile și sentimentele mele.</strong></p>
+        <p>Mama a murit, iar când aveam 8 ani, a murit și tatăl meu. Am fost nevoit să mă mut la bunici. Eram foarte retras la școală.</p>
+        <p>În copilărie, mă gândeam că este ceva în neregulă cu mine, pentru că eram diferit de ceilalți și că nu valorez nimic. Mă simțeam marginalizat.</p>
+        <p>Am ieșit mai ales cu prietenii și m-am simțit o parte din grup. Întotdeauna am vrut să le fac pe plac tuturor și nu am putut niciodată să refuz, să spun <strong>„nu”</strong>.</p>
+        <p>La școală, eram adesea tachinat și mă simțeam din nou singur, ca și cum nu aș aparține.</p>
+        <p>La școala profesională a fost minunat. Am primit multe laude și recunoaștere. Mi-a plăcut foarte mult să merg acolo.</p>
+        <p><strong>Venind în Germania din 2018, la 30 de ani:</strong> pe de o parte, o viață nouă, dar și greu. Despărțirea de fosta mea prietenă, despărțirea de foștii mei prieteni și familie, de grupul meu stabil de apartenență și recunoaștere, m-am simțit singur și pierdut.</p>
+        <p>Am început să consum alcool regulat, la început și singur, da!</p>
+        <p><strong>Consumul de alcool</strong> m-a ajutat să-mi reduc stresul și să uit de probleme. Am găsit prieteni români la locul de muncă și am început să beau împreună cu ei, simțindu-mă acceptat.</p>
+        <p>Doream să fiu pe placul tuturor, i-am ajutat pe toți și nu am putut spune <strong>„nu”</strong>. Mi-a fost teamă să fiu respins, ca și în trecut, ca un copil.</p>
+        <p>Nu m-am arătat slab și nu am vorbit cu nimeni despre probleme. În final, am pierdut <strong>controlul asupra consumului de alcool</strong>.</p>
+        <div id="video-wrapper">
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/o6nKy8KzNTw?si=e8DUPfM8IhU57pIy" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>   
+        </div>
+    `
+},
             {
-                "question": "Ați plănuit să consumați în ziua respectivă atât de mult?",
-                "answer": "Nu, nu a fost planificat!\n\nNu am avut controlul asupra consumului, asta este problema, consumul mi-a scăpat de sub control în timpul petrecerii!"
-            },
+    "question": "Cum va-ți descurcat cu stresul în trecut?",
+    "answer": `
+        <p><strong>În trecut în România am vorbit cu familia și partenera.<strong></p>
+        <div id="video-wrapper">
+            <iframe width="560" height="315" src="https://www.youtube.com/embed/JyOHlu8ft-o?si=F_BYyECgWSK-Y84m" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        </div>
+    `
+},
+           {
+      "question": "Care a fost funcția consumului în perioada când ați băut excesiv alcool?",
+      "answer": "<ul><li>Am băut alcool pentru a reduce <strong>stresul</strong>, pentru a uita de probleme (despărțire, dorința mea de a fi acceptat și de a aparține, dar și viața nouă, a fost foarte greu la început).</li></ul>"
+    },
+    {
+      "question": "Cum faci față stresului în viața ta de astăzi? Cum ai redus stresul?",
+      "answer": "<ul><li>Acum vorbesc deschis și sincer despre problemele mele. Îmi exprim limitele și spun <strong>\"Nu\"</strong>.</li></ul>"
+    },
             {
-                "question": "Cum ați dorit inițial să mergeți acasă, cum ați planificat acest lucru și de ce v-ați abătut de la plan?",
-                "answer": "Am vrut inițial să dormim acolo, dar m-am hotărât, \n\ndin confort, să conduc spre casă. Decizia, clar, a fost greșită și iresponsabilă, am făcut ceva ilegal, conducând sub influența alcoolului. Am făcut un accident!"
-            },
+    "question": "Ce vorbește împotriva faptului că nu erați dependent de alcool?",
+    "answer": `
+        <p><strong>Nu am avut probleme de sevraj, deci probleme fizice!<strong></p>
+        <p><strong>M-am oprit fără ajutor.<strong></p>
+        <p><strong>Nu am băut cantități mari în timpul săptămânii. Nu am băut nimic dimineața.<strong></p>
+        <p><strong>Mi-am respectat Terminele.<strong></p>
+        <p><strong>Nu am fost în spital, nu am făcut Terapie.<strong></p>
+        <div id="video-wrapper">
+            <iframe width="560" height="315" src="https://www.youtube.com/embed/iLaN6vl6hNg?si=8wIZqvBGm8P_RQsx" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        </div>
+    `
+},
             {
-                "question": "Acum înțeleg că siguranța circulației este cel mai important lucru. Ar fi trebuit să refuz și să spun nu. Îmi pare foarte rău pentru cele întâmplate!",
-                "answer": "Ați crezut că mai puteți conduce în siguranță? \n\nDa, m-am simțit în stare să conduc. Din perspectiva de astăzi, desigur, nu a fost cazul!"
-            },
-            {
-                "question": "Ce efecte are alcoolul asupra capacității de conducere?",
-                "answer": "Reacție slabă, vedere tunel\n\nMai mult preocupat de sine, mai puțin concentrat.\n\nDistanțele nu mai pot fi estimate corect\n\nDe exemplu cu mașinile care circulă în sens opus sau în față.\n\nMai ales periculos pentru că nu sunt asigurat\n\nDacă fac accident sub influența alcoolului."
-            },
-            {
-                "question": "Cât de des ați fost sub influența alcoolului pe drum fără a atrage atenția și ce concluzionați din aceasta?",
-                "answer": "Din păcate am condus deseori sub influența alcoolului, ignorând riscurile. Am condus de câteva ori ca în ziua delictului, sau cu rest alcool în sânge, da! Asta a fost iresponsabil din partea mea. Îmi pare rău!"
-            },
-            {
-                "question": "Gânduri, sentimente după delict?",
-                "answer": "După delict, situație jenantă, mi-a fost rușine! Am fost nepăsător și egoist. Mi-am dat seama de gravitatea greșelii mele și faptul că i-am rănit pe prietenii mei și pe mine în trafic, ceea ce nu mi-aș fi dorit niciodată pentru nimeni. Înțeleg că am o problemă cu alcoolul și înțeleg pericolul pe care l-am reprezentat în trafic!"
-            },
-            {
-                "question": "Cum v-ați descurcat cu alcoolul după delict? Cine sau ce te-a motivat să-ți schimbi comportamentul? Care a fost punctul de cotitură?",
-                "answer": "După ce mi-am pierdut permisul de conducere, am renunțat complet la alcool.  Punctul de cotitură a fost accidentul, delictul, m-am trezit la realitate, a fost un șoc pentru mine.  Am înțeles și m-am decis să-mi schimb comportamentul pentru viitorul meu, pentru familia mea, dar și pentru societate. Am realizat că o schimbare este necesară și vreau să mențin această schimbare permanent."
-            },
-            {
-                "question": "Din ce alte motive ați mai renunțat la alcool?",
-                "answer": "Am realizat că nu am control asupra consumului și că acesta îmi provoacă probleme în viață.\n\nCerturi și situații jenante!\n\nNeglijarea hobby-urilor!\n\nAm realizat că alcoolul îmi afectează negativ sănătatea și bunăstarea generală."
-            },
-            {
-                "question": "Va fost ușor să renunțați la alcool?",
-                "answer": "Nu!, nu a fost ușor, a fost neobișnuit să nu mai beau ca înainte alcool, nu a fost o problemă fizică, dar gândurile la alcool, au fost la început prezente, la zile de nașteri, petreceri."
-            },
-            {
-                "question": "De ce nu ați renunțat mai devreme la alcool?",
-                "answer": "În trecut, nu mi-am pus niciodată problema să renunț la băut, deoarece nu am avut grijă de sănătatea mea. Credeam că alcoolul mă ajută să fac față stresului și îmi ușurează relațiile sociale. Consumul de alcool era considerat cel mai normal lucru din lume la petreceri și nu m-am gândit la consecințele negative asupra corpului meu."
-            },
-            {
-                "question": "Cât și cât de des ați consumat? Trecut:",
-                "answer": "Între 20 și 30 de ani , am băut 3-4 beri de 0,5 litri și 2 duble de trei sau patru ori pe lună, mai ales în weekend, de obicei la ocazii speciale sau la restaurant. \n\nDe la 30 la 34 de ani , când am venit in Germania, deci în ultimii patru ani, mi-am schimbat comportamentul de a bea în mod negativ, am început să beau regulat, din păcate, cantitatea de băutură a crescut! Diferit după muncă, de obicei miercuri, joi 2-3 beri. În weekend 4-5, 5-6, 7-8 beri. \n\nCantități maxime: la fiecare 2 luni 9-10 beri + 2 duble, deci de aproximativ 6 ori pe an.                        "
-            },
-            {
-                "question": "De ce ați băut? Cauze?",
-                "answer": "Cauza o văd la mine în trecut și se află în gândurile și sentimentele mele.\n\nÎn România, părinții mei sau ocupat de noi, au avut timp pentru mine. La școală a fost bine, mi-a plăcut.\n\nVenind în Germania din 2018, la 30 de ani, pe de o parte o viață nouă, a fost greu, dar și despărțirea de fosta mea prietenă, despărțirea de foștii mei prieteni și familie, de grupul meu stabil de apartenență si recunoaștere, m-am simțit singur și pierdut. Am început să consum alcool regulat, la început și singur, da!\n\nConsumul de alcool m-a ajutat să-mi reduc stresul și să uit de probleme. Am găsit prieteni români la locul de muncă și am început să beau împreună cu ei, simțindu-mă acceptat. \n\nDoream să fiu pe placul tuturor, i-am ajutat pe toți și nu am putut spune \"nu\", mi-a fost teamă să fiu respins. Nu m-am arătat slab și nu am vorbit cu nimeni despre probleme. În final, am pierdut controlul asupra consumului de alcool."
-            },
-            {
-                "question": "Cum va-ți descurcat cu stresul în trecut?",
-                "answer": "În trecut în România am vorbit cu familia și partenera."
-            },
-            {
-                "question": "Care a fost funcția consumului în perioada când ați băut excesiv alcool?",
-                "answer": "Am băut alcool pentru a reduce stresul, pentru a uita de probleme (despărțire, dorința mea de a fi acceptat și de a aparține, dar și viața nouă, a fost foarte greu la început)."
-            },
-            {
-                "question": "Cum faci față stresului în viața ta de astăzi? Cum ai redus stresul?",
-                "answer": "Acum vorbesc deschis și sincer despre problemele mele. Îmi exprim limitele și spun \"Nu\"."
-            },
-            {
-                "question": "Ce vorbește împotriva faptului că nu erați dependent de alcool?",
-                "answer": "Nu am avut probleme de sevraj, deci probleme fizice!\n\nM-am oprit fără ajutor.\n\nNu am băut cantități mari în timpul săptămânii. Nu am băut nimic dimineața.\n\nMi-am respectat Terminele.\n\nNu am fost în spital, nu am făcut Terapie."
-            },
-            {
-                "question": "Schimbări! Ce sa schimbat în viața dvs. de când nu mai consumați?",
-                "answer": "Totul a devenit mai pozitiv ca urmare a faptului că nu mai beau:\n\nMă simt mai bine, mai sănătos. Este mai bine în relație.(Am o prietenă de doi ani!)\n\nLa serviciu, am mai mult spor și energie, am colegi noi.\n\nMi-am reînviat vechile hobby-uri. Fac din nou mai mult sport, bicicleta, plimbări cu prietena.\n\nTimpul pe care îl petreceam în weekend consumând alcool, l-am înlocuit acum cu hobby-urile și familia."
-            },
-            {
-                "question": "Care ar fi Situațiile Riscante în care noul comportament al consumului de alcool ar putea fi expus riscului?",
-                "answer": "Situații riscante\n\nanumite crize de viață pot fi periculoase, cum ar fi moartea unei persoane dragi, boli grave, pierderea locului de muncă, frică, schimbări de dispoziție, pierderea unui partener sau îmbolnăvirea gravă. În fiecare caz nu aș bea alcool. Mi-aș găsi sprijinul în familie. Continui să trăiesc, privesc înainte.\n\nSituație riscantă(Cineva îmi oferă alcool în viitor la o zi de naștere!)\n\nDacă cineva îmi oferă alcool în viitor, fie la o zi de naștere sau la o petrecere, îi voi spune că nu mai beau alcool pentru că am o problemă cu alcoolul și că văd orice consum ca o pură pierdere de timp! Îmi place să ciocnesc paharele, dar numai cu apă! Îi voi recomanda să facă la fel. Comand băuturi nealcoolice. Evit evenimentele în care experiența a arătat că oamenii beau mult.\n\nSituație riscantă (Mă întâlnesc întâmplător cu vechii mei prieteni și unul dintre ei îmi aduce o bere!)\n\nspun, nu mulțumesc, nu beau alcool, prefer să beau cola! La următoarea ofertă! Nu, mulțumesc, prefer să beau Cola! Dacă nu se oprește, ameninț că plec și mă ridic în mod demonstrativ."
-            },
-            {
-                "question": "Unde vedeți riscul de recidivă \"a face același delict din nou\"? De ce este Riscul de recidivă minimal?",
-                "answer": "În viitor, vreau să respect legea, pentru că nu mai vreau să pun viața nimănui în pericol. Desigur, nimeni nu poate da 100%.\n\nRiscul este minimal pentru că:\n\nAstăzi vorbesc cu alții (prietena care mă sprijină) despre problemele mele cât mai curând posibil.\n\nNu mă mai arăt permanent puternic, pot să arăt că sunt și slab.\n\nAm învățat să spun \"Nu\", nu le mai fac pe plac la toți!\n\nCunosc Situațiile Riscante, știu despre dorința mea de a fi acceptat și de a aparține, îmi cunosc cauzele consumului!"
-            },
+      "question": "Schimbări! Ce s-a schimbat în viața dvs. de când nu mai consumați?",
+      "answer": `
+        <p><strong>Totul a devenit mai pozitiv ca urmare a faptului că nu mai beau:</strong></p>
+        <ul>
+            <li><strong>Mă simt mai bine, am mai multă energie!</strong></li>
+            <li><strong>Este mai bine în relație.</strong> Am o prietenă de doi ani!</li>
+            <li><strong>La serviciu:</strong> am mai mult spor și energie, am colegi noi.</li>
+            <li><strong>Mi-am reînviat vechile hobby-uri:</strong> fac din nou mai mult sport, merg cu bicicleta și mă plimb cu prietena mea.</li>
+            <li><strong>Timpul pe care îl petreceam în weekend consumând alcool</strong>, l-am înlocuit acum cu hobby-urile și familia.</li>
+        </ul>
+        <div class="image-wrapper">
+          <img src='https://cdn.gamma.app/fhpleqvbjim2f32/be381117a46545ff9fb2d00d4fb14d51/original/SchimbariiMinca.jpg' alt='Descrierea imaginii' class='answer-image'>
+        </div>
+    `
+},
+    {
+    "question": "Care ar fi Situațiile Riscante?",
+    "answer": `
+        <p><strong>Crize de viață (moartea unei persoane dragi, boli grave, pierderea locului de muncă, etc.):</strong></p>
+        <p>Mă bazez pe sprijinul familiei și al prietenilor apropiați. Caut ajutor emoțional sau profesional dacă este necesar. Nu folosesc alcoolul ca metodă de consolare, ci mă concentrez pe soluții sănătoase, cum ar fi exercițiile fizice, meditația sau discuțiile cu persoane de încredere. Privesc înainte și continui să trăiesc.</p>
+
+        <p><strong>Reîntâlnirea cu prieteni vechi care oferă alcool:</strong></p>
+        <p>Refuz politicos, spunând: „Nu, mulțumesc, nu mai beau alcool. Prefer o Cola sau altă băutură nealcoolică.” Dacă presiunile continuă, menționez că voi pleca. Este important să fiu ferm, fără a intra în discuții prelungite.</p>
+
+        <p><strong>Oferirea alcoolului la o zi de naștere sau o petrecere:</strong></p>
+        <p>Spun clar și ferm că nu mai beau alcool din cauza problemelor din trecut. Explic că pentru mine orice consum de alcool este o pierdere de timp. Prefer să ciocnesc paharele cu apă sau băuturi nealcoolice și sugerez celor din jur să încerce același lucru. Dacă evenimentul devine inconfortabil, pot pleca.</p>
+
+        <p><strong>Stresul la locul de muncă:</strong></p>
+        <p>În situații de stres la serviciu, nu folosesc alcool pentru a mă relaxa. Am învățat să gestionez stresul într-un mod sănătos: iau o pauză, fac o plimbare sau discut cu un coleg de încredere. Practic tehnici de respirație sau sport pentru a mă calma.</p>
+
+        <p><strong>Singurătatea sau plictiseala:</strong></p>
+        <p>În trecut, foloseam alcoolul când mă simțeam singur sau plictisit. Acum am o rutină diferită: mi-am găsit hobby-uri noi, fac sport sau petrec timp cu familia. Evit să stau izolat și mă implic în activități care mă bucură.</p>
+
+        <p><strong>Sărbători sau evenimente tradiționale:</strong></p>
+        <p>În cadrul sărbătorilor unde se obișnuiește consumul de alcool, aleg să mă concentrez pe atmosfera și pe bucuria momentului, nu pe băut. Mă pregătesc din timp cu băuturi nealcoolice și mă distrez la fel de bine fără alcool.</p>
+
+        <p><strong>Presiunea socială într-un cerc nou de prieteni:</strong></p>
+        <p>Atunci când întâlnesc persoane noi, sunt sincer de la început: „Nu consum alcool, am luat această decizie pentru mine.” Ofer această informație calm și încrezător, prevenind astfel presiunile viitoare.</p>
+
+        <div id="video-wrapper">
+            <iframe width="560" height="315" src="https://www.youtube.com/embed/ys7vNuesTcM?si=IeNHgNa1FeHHLeM6" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        </div>
+    `
+},      
+           {
+    "question": "Unde vedeți riscul de recidivă \"a face același delict din nou\"? De ce este Riscul de recidivă minimal?",
+    "answer": `
+        <p>În viitor, vreau să respect legea, pentru că nu mai vreau să pun viața nimănui în pericol. Desigur, nimeni nu poate da 100%.</p>
+        <p><strong>Riscul este minimal pentru că:<strong></p>
+        <ul>
+            <li>Astăzi vorbesc cu alții (prietena, familia care mă sprijină) despre problemele mele cât mai curând posibil.</li>
+            <li>Am un loc de muncă nou, prieteni noi, am mai mult timp pentru hobbyurile mele! Nu mă mai arăt permanent puternic, pot să arăt că sunt și slab.</li>
+            <li>Am învățat să spun \"Nu\", nu le mai fac pe plac la toți!</li>
+            <li>Cunosc Situațiile Riscante, știu despre dorința mea de a fi acceptat și de a aparține, îmi cunosc cauzele consumului!</li>
+        </ul>
+        <div id="video-wrapper">
+            <iframe width="560" height="315" src="https://www.youtube.com/embed/v7cG8XrGLKE?si=vJrSov1aq5Yjws68" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        </div>
+    `
+},
             {
                 "question": "Plan de urgență (o Listă) după o recidivă(dacă beau din nou!)?",
                 "answer": "Numărul de telefon al consultantului MPU care este întotdeauna disponibil!\n\nO Listă: Indică ce se întâmplă dacă continui să consumi: Datorii, separare, pierderea locului de muncă, boală etc.! Riscul de a pierde tot ce am realizat până acum! Sănătate, prieteni, Sport, bani, hobby-uri!"
             },
             {
-                "question": "Ce ați învățat în timpul pregătirii MPU?",
-                "answer": "Am vorbit despre delict\n\nL-am analizat și am găsit greșelile mele.\n\nGreșeli: Am crezut că nu voi fi prins! Am fost un Egoist! Nu am respectat legea: Am condus sub influența alcoolului! Am fost un pericol pentru mine și pentru alții!\n\nCunosc cauzele consumului meu, dorința mea de recunoaștere și apartenență!\n\nȘtiu că alcoolul este otravă pentru nervi și celule, este dăunător sănătății.\n\nPoate duce la dependență. Cu fiecare intoxicație, celulele creierului mor.\n\nConsumul regulat de băut duce la o memorie slabă și la scăderea inteligenței.\n\nȘtiu ce este memoria dependenței (creierul își va aminti întotdeauna nivelurile maxime).\n\nȘtiu ce înseamnă creșterea toleranței (alcoolul devine din ce în ce mai mult).\n\nȘtiu ce este consumul excesiv de alcool, atunci când cinci sau mai multe pahare de alcool sunt băute de o dată.\n\nRiscul de a comite un delict identic nu poate fi exclus.\n\nAm discutat despre avantajele și dezavantajele. Sunt pregătit pentru viitor."
-            },
-            {
-                "question": "Credeți că ar trebui să vă reprimiți permisul de conducere, vreți neapărat carnetul înapoi?",
-                "answer": "Nu neapărat, dar cred că ar fi frumos dacă mi-aș obține permisul de conducere înapoi. \n\nM-ai important este pentru mine însă faptul că mi-am schimbat comportamentul, nu mai vreau să fiu un pericol pentru nimeni, când particip la traficul rutier. Pentru că nu mai vreau să pun în pericol viața mea nouă."
-            },
-            {
-                "question": "Mai aveți ceva de adăugat pentru a încheia?",
-                "answer": "Cred că retragerea permisului de conducere nu este atât de grav, deoarece este o învățătură de minte pentru mine. \n\nDacă nu mi s-ar fi întâmplat asta, atunci nu aș fi schimbat nimic în viață. Sunt recunoscător pentru asta!"
-            },
+    "question": "Ce ați învățat în timpul pregătirii MPU?",
+    "answer": `
+        <p><strong>Am vorbit despre delicte<strong></p>
+        <p>L-am analizat și am găsit greșelile mele.</p>
+        <p>Greșeli: Am crezut că nu voi fi prins! Am fost un Egoist! Nu am respectat legea: Am condus sub influența alcoolului! Am fost un pericol pentru mine și pentru alții!</p>
+        <p>Cunosc cauzele consumului meu, dorința mea de recunoaștere și apartenență!</p>
+        <p>Știu că alcoolul este otravă pentru nervi și celule, este dăunător sănătății.</p>
+        <p>Poate duce la dependență. Cu fiecare intoxicație, celulele creierului mor.</p>
+        <p>Consumul regulat de băut duce la o memorie slabă și la scăderea inteligenței.</p>
+        <p>Știu ce este memoria dependenței (creierul își va aminti întotdeauna nivelurile maxime).</p>
+        <p>Știu ce înseamnă creșterea toleranței (alcoolul devine din ce în ce mai mult).</p>
+        <p>Știu ce este consumul excesiv de alcool, atunci când cinci sau mai multe pahare de alcool sunt băute de o dată.</p>
+        <p>Riscul de a comite un delict identic nu poate fi exclus.</p>
+        <p>Am discutat despre avantajele și dezavantajele. Sunt pregătit pentru viitor.</p>
+        <div id="video-wrapper">
+            <iframe width="560" height="315" src="https://www.youtube.com/embed/GtbRiKlSdU8?si=cN02aukZ697HP4zW" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        </div>
+    `
+},
+           {
+    "question": "Credeți că ar trebui să vă reprimiți permisul de conducere, vreți neapărat carnetul înapoi?",
+    "answer": `
+        <ul>
+            <li><strong>Cred că ar fi frumos dacă mi-aș obține permisul de conducere înapoi.</strong></li>
+            <li><strong>Mai important pentru mine este faptul că mi-am schimbat comportamentul.</strong> Nu mai vreau să fiu un pericol pentru nimeni când particip la traficul rutier.</li>
+            <li><strong>Pentru că nu mai vreau să pun în pericol viața mea nouă.</strong></li>
+        </ul>
+         <div class="image-wrapper">
+          <img src='https://cdn.gamma.app/fhpleqvbjim2f32/572d6b7e24b645c4bd2f7435d5ff3ae4/original/Carnetul1.jpg' alt='Descrierea imaginii' class='answer-image'>
+        </div>
+    `
+},
+{
+    "question": "Mai aveți ceva de adăugat pentru a încheia?",
+    "answer": `
+        <ul>
+            <li><strong>Cred că retragerea permisului de conducere nu este atât de gravă, deoarece este o învățătură de minte pentru mine.</strong></li>
+            <li><strong>Dacă nu mi s-ar fi întâmplat asta, atunci nu aș fi schimbat nimic în viață.</strong></li>
+            <li><strong>Sunt recunoscător pentru asta!</strong></li>
+        </ul>
+         <div class="image-wrapper">
+          <img src='https://cdn.gamma.app/fhpleqvbjim2f32/58053d2e741140639a73bbce062cb702/original/Screenshot-2024-06-13-194929.jpg' alt='Descrierea imaginii' class='answer-image'>
+        </div>
+    `
+},
+
             {
                 "question": "Când ați intrat pentru prima dată în contact cu alcoolul și când ați consumat pentru prima dată?",
-                "answer": "La vârsta de 14 ani am probat o înghițitură de bere pentru prima dată. Nu mi-a plăcut atunci deloc!"
-            },
+                "answer": ` 
+                <p><strong>La vârsta de 14 ani am probat o înghițitură de bere pentru prima dată. Nu mi-a plăcut atunci deloc!<strong><p>
+                <div id="video-wrapper">
+                  <iframe width="560" height="315" src="https://www.youtube.com/embed/Mhf-xC5HmcQ?si=4DpElmGHy1_xq6fV" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
+             `
+            },           
             {
-                "question": "Care au fost aspectele pozitive ale consumului de alcool?",
-                "answer": "În primul rând, era plăcut. Mă simțeam relaxat și vesel. Un alt lucru pozitiv era că mă simțeam în largul meu și social în compania prietenilor, mai vorbăreț și deschis. Alcoolul avea uneori și un efect distractiv, îmi ridica starea de spirit."
-            },
-            {
-                "question": "Care au fost aspectele negative ale consumului de alcool?",
-                "answer": "A doua zi m-am luptat cu dureri de cap, greață, oboseală și lipsă de putere. Eram obosit, nemotivat, o persoană complet diferită!"
-            },
-            {
-                "question": "Cu puțin și cu mult alcool?",
-                "answer": "Cu puțin alcool, adică una-două sticle de bere, mă simțeam relaxat și vesel, nu am avut plângeri a doua zi. Însă cu mult alcool, aproximativ 5-6 sticle de bere, lucrurile se schimbau. Mă confruntam cu dureri de cap, greață și oboseală excesivă a doua zi. Nu îmi mai puteam desfășura activitatea normal."
-            },
+    "question": "Care au fost aspectele pozitive ale consumului de alcool?",
+    "answer": "<ul>\n    <li><strong>În primul rând, era plăcut.</strong> Mă simțeam relaxat și vesel.</li>\n    <li><strong>Un alt lucru pozitiv</strong> era că mă simțeam în largul meu și social în compania prietenilor, mai vorbăreț și deschis.</li>\n    <li><strong>Alcoolul avea uneori și un efect distractiv,</strong> îmi ridica starea de spirit.</li>\n</ul>"
+},
+
+              {
+    "question": "Care au fost aspectele negative ale consumului de alcool?",
+    "answer": "<ul>\n    <li>A doua zi m-am luptat cu <strong>dureri de cap,</strong> <strong>greață,</strong> <strong>oboseală</strong> și <strong>lipsă de putere.</strong></li>\n    <li>Eram obosit, nemotivat, o persoană complet diferită!</li>\n</ul>"
+},
             {
                 "question": "Unde și cu cine ați consumat mai ales?",
-                "answer": "Am consumat alcool în special în compania prietenilor și colegilor de muncă. De obicei ieșeam în oraș miercuri, joi seara după muncă pentru o bere la un local. De asemenea, băusem la petreceri, nunți sau evenimente importante alături de cunoscuți. Astfel, momentele de relaxare în gașcă erau asociate cu băuturile alcoolice. În trecut, pentru a mă simți acceptat în cercul de prieteni, beam la fel ca ei."
+                "answer": "<ul>\n    <li>Am consumat alcool în special în compania prietenilor și colegilor de muncă.</li>\n    <li>De obicei ieșeam în oraș miercuri, joi seara după muncă pentru o bere la un local.</li>\n    <li>De asemenea, băusem la petreceri, nunți sau evenimente importante alături de cunoscuți.</li>\n    <li>Astfel, momentele de relaxare în gașcă erau asociate cu băuturile alcoolice.</li>\n    <li>În trecut, pentru a mă simți acceptat în cercul de prieteni, bea la fel ca ei.</li>\n</ul>"
             },
             {
                 "question": "Ați fost vreodată întrebat despre consumul de alcool?",
-                "answer": "Da, din mai multe părți (familia, mama). Ar bea prea mult. Dar am considerat că consumul meu este normal. Am ignorat toate lucrurile."
+                "answer": "<ul>\n    <li>Da, din mai multe părți (mama și prietena).</li>\n    <li>Ar bea prea mult.</li>\n    <li>Dar am considerat că consumul meu este normal.</li>\n    <li>Am ignorat toate lucrurile.</li>\n    <li>Au existat și certuri din cauza alcoolului.</li>\n    <li>De când am încetat să beau, totul s-a dezvoltat mai pozitiv.</li>\n    <li>Mă înțeleg mai bine cu partenera mea.</li>\n    <li>De asemenea, sunt mult mai productiv la locul meu de muncă.</li>\n</ul>"
             },
             {
-                "question": "Au existat probleme cu prietena sau familia, la lucru din cauza consumului de alcool?",
-                "answer": "Bineînțeles, ne-am certat deseori din cauza consumului de alcool, la lucru, luni fără putere, obosit, da, am avut probleme să mă concentrez la muncă!"
+                "question": "Au existat probleme cu prietena sau la lucru din cauza consumului de alcool?",
+                "answer": "<ul>\n    <li>Bineînțeles, ne-am certat deseori din cauza consumului de alcool.</li>\n    <li>La lucru, luni fără putere, obosit.</li>\n    <li>Da, am avut probleme să mă concentrez la muncă!</li>\n</ul>"
             },
+                        {
+            "question": "V-ați simțit vinovat câteodată de consumul de alcool?",
+            "answer": "<ul>\n    <li><strong>Da, sigur!</strong> Mai ales când ai un cap mare a doua zi.</li>\n    <li>Dar două zile mai târziu uitasem deja.</li>\n    <li><strong>Știam că trebuie să fac ceva.</strong></li>\n    <li><strong>A rămas însă gândul,</strong> nu am făcut nimic.</li>\n</ul>"
+        },
             {
-                "question": "V-ați simțit vinovat câteodată de consumul de alcool?",
-                "answer": "Da, sigur! Mai ales când ai un cap mare a doua zi. Dar două zile mai târziu uitasem deja, știam că trebuie să fac ceva. A rămas însă gândul, nu am făcut nimic."
-            },
+            "question": "Cum evaluați consumul, ați pierdut vreodată controlul asupra cantităților de băut?",
+            "answer": "<ul>\n    <li><strong>În trecut am avut probleme cu alcoolul și am pierdut de câteva ori controlul cantităților consumate,</strong> ajungând să mă îmbăt peste măsură.</li>\n    <li><strong>S-a întâmplat de aproximativ 4 ori pe an.<strong></li>\n    <li>De obicei bea bere, dar uneori țuică, ceea ce mă făcea să-mi pierd frânele mai repede.</li>\n    <li><strong>Trebuie să recunosc că nu știam să mă opresc la timp.</strong></li>\n</ul>"
+        },
+           {
+            "question": "Dacă au apărut rupturi de film din cauza consumului de alcool, adică dacă după un consum excesiv de alcool ați uitat părți din seara în care ați băut excesiv?",
+            "answer": "<ul>\n    <li>Da, în perioada în care consumam foarte mult alcool, de câteva ori am avut rupturi de film după o seara în care băusem în exces.</li>\n    <li><strong>Erau deja câteva porțiuni din seara petrecută pe care nu mi le mai aduceam aminte.</strong></li>\n    <li>Acesta era un semn clar că depășisem limita sigură și alcoolul îmi afecta memoria.</li>\n</ul>"
+        },
             {
-                "question": "Cum evaluați consumul, ați pierdut vreodată controlul asupra cantităților de băut?",
-                "answer": "În trecut am avut probleme cu alcoolul și am pierdut de câteva ori controlul cantităților consumate, ajungând să mă îmbăt peste măsură. S-a întâmplat de aproximativ 6 ori pe an. De obicei beam bere, dar uneori țuică, ceea ce mă făcea să-mi pierd frânele mai repede. Trebuie să recunosc că nu știam să mă opresc la timp."
-            },
+            "question": "V-ați abținut în mod conștient și deliberat de a consuma alcool în trecut sau mai des pe o perioadă mai lungă de timp? Ați avut pauze de băut?",
+            "answer": "<ul>\n    <li><strong>Sincer, nu am avut pauze de băut și nu au existat niciodată încercări de abstinență.</strong></li>\n    <li><strong>Nu, nu m-am abținut conștient și deliberat de a consuma alcool pe o perioadă mai îndelungată de timp.</strong></li>\n    <li>Deși uneori, după o seara de beție, îmi dădeam seama că nu controlasem bine situația și că ar fi trebuit să reduc cantitatea consumată, nu luam măsuri concrete să mă las.</li>\n    <li><strong>Greșeala mea a fost că uitam prea curând de problemele provocate de alcool și nu înțelegeam faptul că abuzam deja de el.</strong></li>\n</ul>"
+        },
             {
-                "question": "Dacă au apărut rupturi de film din cauza consumului de alcool, adică dacă după un consum excesiv de alcool ați uitat părți din seara în care ați băut excesiv?",
-                "answer": "Da, în perioada în care consumam foarte mult alcool, de câteva ori am avut rupturi de film după o seara în care băusem în exces. Erau deja câteva porțiuni din seara petrecută pe care nu mi le mai aduceam aminte. Acesta era un semn clar că depășisem limita sigură și alcoolul îmi afecta memoria."
-            },
-            {
-                "question": "V-ați abținut în mod conștient și deliberat de a consuma alcool în trecut sau mai des pe o perioadă mai lungă de timp? Ați avut pauze de băut?",
-                "answer": "Sincer, nu am avut pauze de băut și nu au existat niciodată încercări de abstinență. Nu, nu m-am abținut conștient și deliberat de a consuma alcool pe o perioadă mai îndelungată de timp. Deși uneori, după o seara de beție, îmi dădeam seama că nu controlasem bine situația și că ar fi trebuit să reduc cantitatea consumată, nu luam măsuri concrete să mă las. Greșeala mea a fost că uitam prea curând de problemele provocate de alcool și nu înțelegeam faptul că abuzam deja de el."
-            },
-            {
-                "question": "În ce categorie de băutori va vedeți astăzi retrospectiv? Cum ați evalua comportamentul dvs. de băut până la data infracțiunii?",
-                "answer": "Astăzi mă văd în abuz, cantitățile de alcool au fost ridicate și problematice.\n\nScala la 8. (sub mediu - mediu - abuziv - dependent)? \n\n                                         Scala 1 2 3 4 5 6 7 8 9 10"
-            },
+            "question": "În ce categorie de băutori va vedeți astăzi retrospectiv? Cum ați evalua comportamentul dvs. de băut până la data infracțiunii?",
+            "answer": "<ul>\n    <li>Astăzi mă văd în <strong>abuz,</strong> cantitățile de alcool au fost ridicate și problematice.</li>\n    <li>Scala la 8. (sub mediu - mediu - abuziv - dependent)</li>\n    <li>Scala 1 2 3 4 5 6 7 <strong>8</strong> 9 10</li>\n</ul>"
+        },
             {
                 "question": "Beți alcool astăzi? Dacă da, ce, cât și cât de des? Beți bere fără alcool? Vă puteți imagina să beți una sau două beri în viitor?",
-                "answer": "Sunt abstinent de mai mult de un an! Nu! Nu, nu beau bere fără alcool, acord în mod conștient atenție la ceea ce mănânc și dacă există alcool în băuturi, alimente sau medicamente. În cazul medicamentelor, întreb dacă există alternative fără alcool. Nu! am probleme cu alcoolul, știu că nu va rămâne doar la o bere!"
+                "answer": "<ul>\n    <li><strong>Sunt abstinent de mai mult de un an!</strong></li>\n    <li>Nu!</li>\n    <li><strong>Nu, nu beau bere fără alcool,</strong> acord în mod conștient atenție la ceea ce mănânc și dacă există alcool în băuturi, alimente sau medicamente.</li>\n    <li>În cazul medicamentelor, întreb dacă există alternative fără alcool.</li>\n    <li><strong>Nu!</strong> Am probleme cu alcoolul, știu că nu va rămâne doar la o bere!</li>\n</ul>"
             },
             {
                 "question": "Ce contact aveți momentan cu gașca, cu care ați consumat?",
-                "answer": "Între timp nu mai am niciun contact cu clica mea. Când mi-am exprimat dorința de a nu mai bea alcool, unii dintre foștii prieteni nu au fost în stare să mă înțeleagă sau să mă accepte. Majoritatea întâlnirilor noastre se desfășurau în locuri unde se consuma băuturi alcoolice. Acum evit astfel de evenimente sau localuri. În cercul meu actual de prieteni, consumul intensiv de alcool nu ar fi acceptat."
+                "answer": "<ul>\n    <li><strong>Între timp nu mai am niciun contact cu clica mea.</strong></li>\n    <li>Când mi-am exprimat dorința de a nu mai bea alcool, unii dintre foștii prieteni nu au fost în stare să mă înțeleagă sau să mă accepte.</li>\n    <li>Majoritatea întâlnirilor noastre se desfășurau în locuri unde se consuma băuturi alcoolice.</li>\n    <li>Acum evit astfel de evenimente sau localuri.</li>\n    <li><strong>În cercul meu actual de prieteni, consumul intensiv de alcool nu ar fi acceptat.</strong></li>\n</ul>"
             },
             {
                 "question": "Ați fost un șofer sigur?",
-                "answer": "Nu, altfel nu aș fi la MPU, deoarece șoferii foarte buni nu trebuie să meargă la MPU!"
+                "answer": `
+                 <p><strong>Nu, altfel nu aș fi la MPU, deoarece șoferii foarte buni nu trebuie să meargă la MPU!<strong><p>
+                 <div id="video-wrapper">
+                   <iframe width="560" height="315" src="https://www.youtube.com/embed/dFyrz1dIjXk?si=H7vPJNxbRS3pnG-c" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                 </div>
+             `
+
             },
             {
-                "question": "Cum apreciați faptul că până la accident nu ați avut niciodată un accident mai mare?",
-                "answer": "A fost doar noroc!"
-            },
-            {
-                "question": "De ce avem atâtea reguli și legi?",
-                "answer": "Avem nevoie de reguli. Regulile ne protejează. Am înțeles că dacă respect regulile voi trăi în siguranță și în pace. Fără reguli ar fi doar haos."
-            },
+    "question": "Cum apreciați faptul că până la accident nu ați avut niciodată un accident mai mare?",
+    "answer": "<ul><li>A fost doar <strong>noroc</strong>!</li></ul>"
+  },
+           {
+    "question": "De ce avem atâtea reguli și legi?",
+    "answer": `
+        <ul>
+            <li><strong>Avem nevoie de reguli.</strong></li>
+            <li><strong>Regulile ne protejează.</strong></li>
+            <li><strong>Am înțeles că dacă respect regulile voi trăi în siguranță și în pace.</strong></li>
+            <li><strong>Fără reguli ar fi doar haos.</strong></li>
+        </ul>
+        <div id="video-wrapper">
+            <iframe width="560" height="315" src="https://www.youtube.com/embed/dM5Di1rTKIg?si=1uqc3sdi4eil7mY_" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        </div>
+    `
+},
             {
                 "question": "Cum vă vedeți ca șofer în trecut?",
-                "answer": "Am fost un șofer egoist și neglijent, mă gândeam doar la mine și nu la consecințe! Îmi pare rău!"
+                "answer": "<ul>\n    <li><strong>Am fost un șofer egoist și neglijent,</strong> mă gândeam doar la mine și nu la consecințe!</li>\n    <li><strong>Îmi pare rău!</strong></li>\n</ul>"
             },
             {
                 "question": "Ce credeți că este un șofer bun, normal?",
-                "answer": "Un șofer de mașină bun este cineva care respectă regulile, este atent, se gândește la alții și nu mai reprezintă un pericol în trafic!"
+                "answer": "<ul>\n    <li>Un șofer de mașină bun este cineva care <strong>respectă regulile,</strong> este <strong>atent,</strong> se gândește la alții și nu mai reprezintă un pericol în trafic!</li>\n</ul>"
             },
             {
                 "question": "Câte persoane trebuie să meargă la MPU pe an?",
-                "answer": "90.000 de persoane în anul 2019, din cauza alcoolului 40%, droguri și medicamente cu 30%, puncte 18%, restul 12%."
+                "answer": "<ul>\n    <li>90.000 de persoane în anul 2019, <strong>din cauza alcoolului 40%</strong> , droguri și medicamente cu 30%, puncte 18%, restul 12%.</li>\n</ul>"
             },
             {
                 "question": "Ultima dată când ați spus Nu?",
-                "answer": "Am refuzat unui prieten care sa mutat pentru a cincea oară în doi ani și care a avut nevoie din nou de oameni pentru a transporta cutii."
+                "answer": "<ul>\n    <li>Am refuzat unui prieten care <strong>sa mutat pentru a cincea oară în doi ani</strong> și care a avut nevoie din nou de oameni pentru a transporta cutii.</li>\n</ul>"
             }
 ];
+
+function stripHtml(html) {
+    const tmp = document.createElement("div");
+    tmp.innerHTML = html;
+    return tmp.textContent || tmp.innerText || "";
+}
 
 function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
@@ -226,27 +475,25 @@ function shuffleArray(array) {
 
 function generateAnswers(questionIndex) {
     if (!qa_data[questionIndex] || !qa_data[questionIndex].answer) {
-        console.error("Ungültige Daten für Frage:", questionIndex);
+        console.error("Invalid data for question:", questionIndex);
         return [];
     }
 
-    const correctAnswer = qa_data[questionIndex].answer;
+    const correctAnswer = stripHtml(qa_data[questionIndex].answer);
     const wrongAnswers = [];
 
-    // Generiere 2 unterschiedliche falsche Antworten
     for (let i = 0; i < 2; i++) {
         let randomIndex = Math.floor(Math.random() * qa_data.length);
-        while (randomIndex === questionIndex || wrongAnswers.includes(qa_data[randomIndex].answer)) {
+        while (randomIndex === questionIndex || wrongAnswers.includes(stripHtml(qa_data[randomIndex].answer))) {
             randomIndex = Math.floor(Math.random() * qa_data.length);
         }
-        wrongAnswers.push(qa_data[randomIndex].answer);
+        wrongAnswers.push(stripHtml(qa_data[randomIndex].answer));
     }
 
     const allAnswers = [correctAnswer, ...wrongAnswers];
     shuffleArray(allAnswers);
     return allAnswers;
 }
-
 
 let currentQuestionIndex = 0;
 let correctAnswers = 0;
@@ -255,7 +502,13 @@ function startQuiz() {
     document.getElementById('quiz').style.display = 'block';
     currentQuestionIndex = 0;
     correctAnswers = 0;
+    updateProgress();
     showQuestion();
+}
+
+function updateProgress() {
+    const progress = document.getElementById('progress');
+    progress.textContent = `Frage ${currentQuestionIndex + 1} von ${qa_data.length}`;
 }
 
 function showQuestion() {
@@ -263,6 +516,7 @@ function showQuestion() {
     answerButtons.innerHTML = '';
 
     if (currentQuestionIndex < qa_data.length) {
+        updateProgress();
         const question = qa_data[currentQuestionIndex].question;
         document.getElementById('questionText').textContent = question;
 
@@ -278,10 +532,8 @@ function showQuestion() {
     }
 }
 
-
-
 function checkAnswer(selectedAnswer, selectedButtonIndex) {
-    const correctAnswer = qa_data[currentQuestionIndex].answer;
+    const correctAnswer = stripHtml(qa_data[currentQuestionIndex].answer);
     const answerButtons = document.getElementById('answerButtons').children;
     
     for (let i = 0; i < answerButtons.length; i++) {
@@ -307,23 +559,21 @@ function nextQuestion() {
 }
 
 function showResults() {
-  document.getElementById('quiz').style.display = 'none';
-  document.getElementById('results').style.display = 'block';
+    document.getElementById('quiz').style.display = 'none';
+    document.getElementById('results').style.display = 'block';
 
-  const correctCount = correctAnswers;
-  const totalQuestions = qa_data.length;
-  let resultMessage = `Sie haben ${correctCount} von ${totalQuestions} Fragen richtig beantwortet. `;
+    const correctCount = correctAnswers;
+    const totalQuestions = qa_data.length;
+    let resultMessage = `Sie haben ${correctCount} von ${totalQuestions} Fragen richtig beantwortet. `;
 
-  if (correctCount > 40) {
-    resultMessage += "<span style='color:green;'>Test bestanden!</span>";
-  } else {
-    resultMessage += "<span style='color:red;'>Test nicht bestanden.</span>";
-  }
+    if (correctCount > 40) {
+        resultMessage += "<span style='color:green;'>Test bestanden!</span>";
+    } else {
+        resultMessage += "<span style='color:red;'>Test nicht bestanden.</span>";
+    }
 
-  document.getElementById('results').innerHTML = resultMessage;
+    document.getElementById('results').innerHTML = resultMessage;
 }
-
-
 </script>
 
 </body>
